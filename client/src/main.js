@@ -25,8 +25,16 @@ const API_URL = "http://localhost:3000/reviews";
  * Kontrollerar om alla formulärfält är ifyllda
  */
 const checkInputs = () => {
-  // TODO: Hämta värden från alla input-fält
-  // TODO: Aktivera/inaktivera submit-knappen baserat på om alla fält är ifyllda
+  bookTitle = form.elements.bookTitle.value;
+  author = form.elements.author.value;
+  reviewer = form.elements.reviewer.value;
+  rating = form.elements.rating.value;
+  review = form.elements.review.value;
+
+  if (!bookTitle || !author || !reviewr || !rating || !review) 
+  submitBtn.disabled = true;
+
+  else submitBtn.disabled = false;
 };
 
 /**
@@ -87,17 +95,38 @@ const displayReviews = (reviews) => {
     reviewsContainer.appendChild(reviewDiv);
   });
 
-  // TODO: Lägg till event listeners på radera-knappar
+  addDeleteEventListeners();
+  addUpdateEventListeners();
 };
 
 /**
  * Hanterar radering av en recension
  */
 const handleDelete = async (e) => {
-  // TODO: Hämta review ID från knappen
-  // TODO: Visa bekräftelsedialog
-  // TODO: Skicka DELETE-request till backend
-  // TODO: Ladda om recensioner om det lyckas
+  const messageId = e.target.dataset.id;
+  console.log({ messageId: messageId });
+
+  try {
+    const response = await axios.delete(
+      `http://localhost:3000/messages/${messageId}`
+    );
+
+    if (response.data.success) {
+      alert("Meddelandet raderades!");
+
+    await loadMessages();
+    } else {
+     alert("Kunde inte radera meddelandet!");
+    }
+  } catch (error) {
+    console.log("Fel vid radering:", error);
+    
+    if (error.response && error.response.status === 404) {
+    alert("Meddelandet hittades inte");
+    } else {
+     alert("Kunde inte radera meddelandet");
+    }
+  } 
 };
 
 /**
@@ -126,6 +155,14 @@ form.addEventListener("submit", async (e) => {
 
   if (!bookTitle || !author || !reviewer || !rating || !review) return
   alert("Fyll i alla fält")
+
+  const messageData = {
+    bookTitle : bookTitle, 
+    author : author, 
+    reviewer : reviewer, 
+    rating : rating, 
+    review : review
+  };
 
   // TODO: Hämta alla värden från formuläret
   // TODO: Skapa ett reviewData-objekt
