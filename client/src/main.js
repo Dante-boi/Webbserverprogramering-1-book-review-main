@@ -1,9 +1,9 @@
 // ========================================
-// IMPORTS
+import axios from "axios"
 // ========================================
 
 // ========================================
-// DOM-ELEMENT
+
 // ========================================
 const form = document.querySelector(".review-form");
 const submitBtn = document.querySelector("button[type='submit']");
@@ -31,7 +31,7 @@ const checkInputs = () => {
   rating = form.elements.rating.value;
   review = form.elements.review.value;
 
-  if (!bookTitle || !author || !reviewr || !rating || !review) 
+  if (!bookTitle || !author || !reviewer || !rating || !review) 
   submitBtn.disabled = true;
 
   else submitBtn.disabled = false;
@@ -111,7 +111,7 @@ const handleDelete = async (e) => {
       `http://localhost:3000/messages/${messageId}`
     );
 
-    if (response.data.success) {
+    if (!response.data.success) {
       alert("Meddelandet raderades!");
 
     await loadMessages();
@@ -156,7 +156,7 @@ form.addEventListener("submit", async (e) => {
   if (!bookTitle || !author || !reviewer || !rating || !review) return
   alert("Fyll i alla fält")
 
-  const messageData = {
+  const bookData = {
     bookTitle : bookTitle, 
     author : author, 
     reviewer : reviewer, 
@@ -164,16 +164,35 @@ form.addEventListener("submit", async (e) => {
     review : review
   };
 
-  // TODO: Hämta alla värden från formuläret
-  // TODO: Skapa ett reviewData-objekt
-  // TODO: Skicka POST-request till backend
-  // TODO: Om det lyckas: visa meddelande, rensa formuläret, ladda om recensioner
-  // TODO: Hantera fel
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/save-bookreview",
+      bookData
+    );
+
+    if (response.status === 201) {
+      alert("Meddelandet sparades!");
+      form.reset();
+    } else {
+      alert("Ett fel uppstod!");
+    }
+  } catch (error) {
+    console.error("Fel:", error);
+    alert("Kunde inte skicka meddelandet");
+  }
 });
 
 /**
  * Laddar recensioner när sidan laddas
  */
 window.addEventListener("load", async () => {
-  // TODO: Anropa loadReviews()
-});
+  const loadMessages = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/messages");
+
+      console.log({ response: response.data.data });
+
+      displayMessages(response.data.data);    
+    } catch (error) {}
+  };
+}); 
