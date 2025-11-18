@@ -21,7 +21,7 @@ const saveBookreview = (bookData) => {
   let reviews = [];
 
   try {
-    const datat = fs.readFileSync('reviews.json', 'utf-8');
+    const data = fs.readFileSync('reviews.json', 'utf-8');
 
   if (data.trim()) {
     reviews = JSON.parse(data);

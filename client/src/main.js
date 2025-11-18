@@ -37,6 +37,10 @@ const checkInputs = () => {
   else submitBtn.disabled = false;
 };
 
+  // Lägg till event listeners för både radera och uppdatera
+  addDeleteEventListeners();
+  addUpdateEventListeners();
+
 /**
  * Skapar HTML för stjärnbetyg
  */
@@ -103,28 +107,28 @@ const displayReviews = (reviews) => {
  * Hanterar radering av en recension
  */
 const handleDelete = async (e) => {
-  const messageId = e.target.dataset.id;
-  console.log({ messageId: messageId });
+  const reviewId = e.target.dataset.id;
+  console.log({ reviewId: reviewId });
 
   try {
     const response = await axios.delete(
-      `http://localhost:3000/messages/${messageId}`
+      `http://localhost:3000/messages/${reviewId}`
     );
 
     if (!response.data.success) {
-      alert("Meddelandet raderades!");
+      alert("Recensionen raderades!");
 
-    await loadMessages();
+    await loadReviews();
     } else {
-     alert("Kunde inte radera meddelandet!");
+     alert("Kunde inte radera recensionen!");
     }
   } catch (error) {
     console.log("Fel vid radering:", error);
     
     if (error.response && error.response.status === 404) {
-    alert("Meddelandet hittades inte");
+    alert("Recensionen hittades inte");
     } else {
-     alert("Kunde inte radera meddelandet");
+     alert("Kunde inte radera recensionen");
     }
   } 
 };
@@ -171,14 +175,14 @@ form.addEventListener("submit", async (e) => {
     );
 
     if (response.status === 201) {
-      alert("Meddelandet sparades!");
+      alert("Recensionen sparades!");
       form.reset();
     } else {
       alert("Ett fel uppstod!");
     }
   } catch (error) {
     console.error("Fel:", error);
-    alert("Kunde inte skicka meddelandet");
+    alert("Kunde inte skicka recensionen");
   }
 });
 
@@ -186,13 +190,13 @@ form.addEventListener("submit", async (e) => {
  * Laddar recensioner när sidan laddas
  */
 window.addEventListener("load", async () => {
-  const loadMessages = async () => {
+  const loadReviews = async () => {
     try {
       const response = await axios.get("http://localhost:3000/messages");
 
       console.log({ response: response.data.data });
 
-      displayMessages(response.data.data);    
-    } catch (error) {}
+      displayReviews(response.data.data);    
+    } catch (error) {} 
   };
 }); 
