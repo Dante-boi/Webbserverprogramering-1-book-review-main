@@ -1,11 +1,20 @@
 [
   {
+    "bookTitle": "bästa burgaren",
+    "author": "Johan Glans",
+    "reviewer": "Lut",
+    "rating": "4",
+    "review": "han sa att den va veldi go",
+    "timestamp": "2025-12-02T12:40:17.074Z",
+    "id": "95f6caa1-060a-4747-a66a-199b01608b04"
+  },
+  {
     "bookTitle": "s",
     "author": "s",
     "reviewer": "s",
-    "rating": "2",
+    "rating": "1",
     "review": "s",
-    "timestamp": "2025-11-17T09:42:46.559Z",
-    "id": "3c965d57-cceb-4ba0-af89-f4596f8658a6"
+    "timestamp": "2025-12-02T12:40:36.856Z",
+    "id": "fcd6ae84-2751-4ea9-92ba-b1ca54cb7640"
   }
 ]

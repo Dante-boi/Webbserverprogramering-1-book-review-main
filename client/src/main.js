@@ -15,15 +15,12 @@ let reviewer = form.elements.reviewer.value
 let rating = form.elements.rating.value 
 let review = form.elements.review.value 
 
-const API_URL = "http://localhost:3000/reviews";
-
-// ========================================
-// HJÄLPFUNKTIONER
-// ========================================
+const API_URL = "http://localhost:3000";
 
 /**
  * Kontrollerar om alla formulärfält är ifyllda
  */
+
 const checkInputs = () => {
   bookTitle = form.elements.bookTitle.value;
   author = form.elements.author.value;
@@ -31,15 +28,21 @@ const checkInputs = () => {
   rating = form.elements.rating.value;
   review = form.elements.review.value;
 
-  if (!bookTitle || !author || !reviewer || !rating || !review) 
+  if (
+    !bookTitle || 
+    !author || 
+    !reviewer || 
+    rating < 0 ||
+    rating > 5 || 
+    !review
+  ) { 
   submitBtn.disabled = true;
-
-  else submitBtn.disabled = false;
+  } else {
+    submitBtn.disabled = false;
+  }
 };
 
   // Lägg till event listeners för både radera och uppdatera
-  addDeleteEventListeners();
-  addUpdateEventListeners();
 
 /**
  * Skapar HTML för stjärnbetyg
@@ -99,8 +102,9 @@ const displayReviews = (reviews) => {
     reviewsContainer.appendChild(reviewDiv);
   });
 
-  addDeleteEventListeners();
-  addUpdateEventListeners();
+    addDeleteEventListeners();
+    addUpdateEventListeners();
+
 };
 
 /**
@@ -137,9 +141,15 @@ const handleDelete = async (e) => {
  * Hämtar och visar alla recensioner från servern
  */
 const loadReviews = async () => {
-  // TODO: Skicka GET-request till backend
-  // TODO: Visa recensionerna med displayReviews()
-  // TODO: Hantera fel
+  try {
+     const response = await axios.get(`${API_URL}/reviews`);
+
+     console.log({ response: response.data.data });
+
+    displayReviews(response.data.data);    
+  } catch (error) {
+    alert("Kunde ej hämta recensioner")
+  } 
 };
 
 // ========================================
@@ -157,8 +167,14 @@ form.addEventListener("input", checkInputs);
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  if (!bookTitle || !author || !reviewer || !rating || !review) return
-  alert("Fyll i alla fält")
+  let bookTitle = form.elements.bookTitle.value // Läser in det som skrivs in i namn input
+  let author = form.elements.author.value 
+  let reviewer = form.elements.reviewer.value 
+  let rating = form.elements.rating.value 
+  let review = form.elements.review.value 
+
+  if (!bookTitle || !author || !reviewer || rating < 0 || rating > 5 || !review) 
+    return alert("Fyll i alla fält");
 
   const bookData = {
     bookTitle : bookTitle, 
@@ -170,7 +186,7 @@ form.addEventListener("submit", async (e) => {
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/save-bookreview",
+      "http://localhost:3000/save-review",
       bookData
     );
 
@@ -189,14 +205,7 @@ form.addEventListener("submit", async (e) => {
 /**
  * Laddar recensioner när sidan laddas
  */
+
 window.addEventListener("load", async () => {
-  const loadReviews = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/messages");
-
-      console.log({ response: response.data.data });
-
-      displayReviews(response.data.data);    
-    } catch (error) {} 
-  };
-}); 
+  loadReviews();
+});

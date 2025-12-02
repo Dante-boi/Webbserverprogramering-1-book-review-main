@@ -15,30 +15,69 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const filePath = `${__dirname}/bookreviews.json`;
-const data = fs.readFileSync(filePath, "utf-8");
+
+const getReviews = () => {
+  const data = fs.readFileSync(filePath, "utf-8"); // Läser filens innehåll som text
+
+  try {
+    if (fs.existsSync(filePath)) return JSON.parse(data)
+
+      console.log();
+      
+
+      return [];
+  } catch (error) {
+    console.error("Error reading reviews:", error)
+
+    return [];
+  }
+}
 
 const saveBookreview = (bookData) => {
   let reviews = [];
 
-  try {
-    const data = fs.readFileSync('reviews.json', 'utf-8');
+  const data = fs.readFileSync(filePath, "utf-8"); // Läser filens innehåll som text
 
   if (data.trim()) {
-    reviews = JSON.parse(data);
+    try {
+     
+       reviews = JSON.parse(data); // Gör om texten till JavaScript-format (oftast en array)
+
+       // Om filen inte innehåller en array, återställ den till en tom array
+       if (!Array.isArray(reviews)) reviews = []
+    } catch (error) {
+      // Om JSON är trasig eller något går fel -> nollställ reviews
+      console.error("Error during read of reviews.json:", error)
+      reviews = []
+    }
   }
-} catch (error) {
-    console.log('Skapar ny fil eller filen var tom');
-}
 
   reviews.push(bookData); // Lägg till det nya meddelande-objektet sist i arrayen
 
-  // Spara tillbaka hela arrayen till filen
-  // JSON.stringify() konverterar JS till JSON-text
-  // null, 2 gör JSON-filen lättläst med indentering
+  try {
+    console.log({ reviews: reviews });
+
+  // Sparar tillbaka alla recensioner till reviews.json
   fs.writeFileSync(filePath, JSON.stringify(reviews, null, 2));
+  } catch (error) {
+  // Skriv ut error meddelande i terminalen
+  console.log("Error writing to reviews.json");
+  }
 };
 
-app.post("/save-bookreview", (req, res) => {
+app.get("/reviews", (req, res) => {
+  try {
+    const reviews = getReviews();
+
+    res.status(200).json({ success: true, data: reviews });
+  } catch (error) {
+    console.error("Error reading file:", error);
+
+    res.status(500).json({ success: false });
+  }
+});
+
+app.post("/save-review", (req, res) => {
   const {   bookTitle, 
     author, 
     reviewer, 
@@ -69,4 +108,3 @@ app.post("/save-bookreview", (req, res) => {
 });
  
 export default app;
- 
