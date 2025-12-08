@@ -102,8 +102,8 @@ const displayReviews = (reviews) => {
     reviewsContainer.appendChild(reviewDiv);
   });
 
-    addDeleteEventListeners();
-    addUpdateEventListeners();
+    // addDeleteEventListeners();
+    // addUpdateEventListeners();
 
 };
 
@@ -149,6 +149,8 @@ const loadReviews = async () => {
     displayReviews(response.data.data);    
   } catch (error) {
     alert("Kunde ej hämta recensioner")
+    console.log(error);
+    
   } 
 };
 

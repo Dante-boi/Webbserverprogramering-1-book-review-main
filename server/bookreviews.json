@@ -16,5 +16,14 @@
     "review": "s",
     "timestamp": "2025-12-02T12:40:36.856Z",
     "id": "fcd6ae84-2751-4ea9-92ba-b1ca54cb7640"
+  },
+  {
+    "bookTitle": "Lilla Jaguaren",
+    "author": "Tina Brunelsson",
+    "reviewer": "Jan",
+    "rating": "2",
+    "review": "Den är inte alls gjord för barn, den innehåller sexscener...",
+    "timestamp": "2025-12-08T09:47:09.534Z",
+    "id": "32463a41-2b4e-4eb3-ab33-146421c1be1f"
   }
 ]
