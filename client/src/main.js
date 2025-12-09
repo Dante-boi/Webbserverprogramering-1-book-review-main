@@ -102,7 +102,7 @@ const displayReviews = (reviews) => {
     reviewsContainer.appendChild(reviewDiv);
   });
 
-    // addDeleteEventListeners();
+    addDeleteEventListeners();
     // addUpdateEventListeners();
 
 };
@@ -115,24 +115,23 @@ const handleDelete = async (e) => {
   console.log({ reviewId: reviewId });
 
   try {
-    const response = await axios.delete(
-      `http://localhost:3000/messages/${reviewId}`
-    );
+    // Skicka DELETE-request till servern och lägg till ID:t i URL:en
+    const response = await axios.delete(`${API_URL}/reviews/${reviewId}`);
 
     if (!response.data.success) {
       alert("Recensionen raderades!");
 
-    await loadReviews();
+    // Ladda om alla recensioner för att visa den uppdaterade verisionen
+    loadReviews();
     } else {
-     alert("Kunde inte radera recensionen!");
+     alert("Kunde ej radera recension!");
     }
-  } catch (error) {
-    console.log("Fel vid radering:", error);
-    
+ } catch (error) {
+  
     if (error.response && error.response.status === 404) {
     alert("Recensionen hittades inte");
     } else {
-     alert("Kunde inte radera recensionen");
+     alert("Kunde ej radera recension!");
     }
   } 
 };
@@ -154,9 +153,19 @@ const loadReviews = async () => {
   } 
 };
 
-// ========================================
-// EVENT LISTENERS
-// ========================================
+const addDeleteEventListeners = () => {
+  // Hitta alla knappar med klassen "delete-btn"
+  const deleteButton = document.querySelectorAll(".delete-btn")
+
+  // Lägg till en klick-lyssnare på varje knapp
+  deleteButtons.forEach((btn) => {
+    btn.addDeleteEventListeners("click", handleDelete);
+  });
+
+  // for (let i = 0; i <= deleteButtons.length; i++) {
+  //   btn.addEventListener("click", handleDelete);
+  // }
+};
 
 /**
  * Lyssna på ändringar i formuläret

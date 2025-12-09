@@ -77,6 +77,27 @@ app.get("/reviews", (req, res) => {
   }
 });
 
+app.delete("/reviews/:id", (req, res) => {
+  console.log("radera recensionen");
+  const reviewId = req.params.id;
+
+  console.log({ ID: reviewId });
+  
+  try {
+    const deleted = deleteReview(reviewId);
+
+    if (deleted) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(404).json({ success: false });
+    }
+  } catch (error) {
+    console.log("Error:", error);
+
+    res.status(500).json({ success: false });
+  }
+});
+
 app.post("/save-review", (req, res) => {
   const {   bookTitle, 
     author, 
